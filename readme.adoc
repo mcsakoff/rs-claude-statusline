@@ -15,7 +15,9 @@ Because everything must be re-written in Rust! :-)
 == Status line example (w/o colors)
 
 [source]
-qwen3.6-35b-a3b ▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 27.8% (55.5k/200.0k)
+----
+LM Studio [qwen3.6-35b-a3b-opus-4.6]  ▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░ 27.8% (55.5k/200.0k)
+----
 
 == Install
 
@@ -39,6 +41,10 @@ Update `~/.claude/settings.json`, add:
   }
 }
 ----
+
+== TODO
+
+- Support more than one running model in LM Studio.
 
 == References
 

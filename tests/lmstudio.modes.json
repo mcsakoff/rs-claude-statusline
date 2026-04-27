@@ -1,0 +1,20 @@
+{
+  "data": [
+    {
+      "id": "qwen3.6-35b-a3b-opus-4.6",
+      "object": "model",
+      "type": "llm",
+      "publisher": "mcsakoff",
+      "arch": "qwen3_5_moe",
+      "compatibility_type": "mlx",
+      "quantization": "4bit",
+      "state": "loaded",
+      "max_context_length": 262144,
+      "loaded_context_length": 200000,
+      "capabilities": [
+        "tool_use"
+      ]
+    }
+  ],
+  "object": "list"
+}

@@ -5,8 +5,8 @@ description = "Custom status line for Claude Code"
 repository = "https://github.com/mcsakoff/rs-claude-statusline"
 authors = ["Alexey McSakoff <mcsakoff@gmail.com>"]
 edition = "2024"
-publish = false
 license = "MIT"
+publish = false
 
 [dependencies]
 anyhow = "1.0"
@@ -15,3 +15,4 @@ env_logger = "0.11"
 log = "0.4.29"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+ureq = { version = "3", features = ["json"] }

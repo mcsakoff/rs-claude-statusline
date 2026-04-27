@@ -1,6 +1,6 @@
-use colorz::{Colorize, css};
+use colorz::{css, Colorize};
 
-use super::StatusData;
+use super::{Model, StatusData};
 
 /// Widgets must implement this trait.
 pub trait Renderable {
@@ -33,7 +33,7 @@ impl StatusLine {
         W: Renderable + 'static,
     {
         if !self.widgets.is_empty() {
-            self.widgets.push(Box::new(" ".to_string()));
+            self.widgets.push(Box::new("  ".to_string()));
         }
         self.widgets.push(Box::new(widget));
         self
@@ -73,9 +73,12 @@ impl ModelName {
 
 impl Renderable for ModelName {
     fn render(&self, data: &StatusData) -> String {
-        let color = css::Salmon;
-        let output = data.model.fg(color).bold().to_string();
-        output
+        match &data.model {
+            Model::Claude(model_name) => model_name.fg(css::Salmon).bold().to_string(),
+            Model::LMStudio(model_name) => {
+                format!("{} [{}]", "LM Studio".bold(), model_name.cyan())
+            }
+        }
     }
 }
 
@@ -89,7 +92,7 @@ pub struct ContextBar {
 impl ContextBar {
     pub fn new(width: usize) -> Self {
         Self {
-            width,
+            width: width.clamp(1, usize::MAX),
             with_percentage: false,
             with_usage: false,
         }
