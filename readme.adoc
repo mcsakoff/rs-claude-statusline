@@ -1,0 +1,49 @@
+= ClaudeCode Status Line
+:icons: font
+ifdef::env-github[:outfilesuffix: .adoc]
+
+image:https://img.shields.io/badge/license-MIT-green.svg[License: MIT,link=https://opensource.org/licenses/MIT]
+
+Custom status line for link:https://claude.com/product/claude-code[ClaudeCode] that displays current model and context usage. It is specifically designed for use with link:https://lmstudio.ai[LM Studio] but can be extended to support other LLM servers like, for instance, link:https://ollama.com[Ollama].
+
+[NOTE]
+====
+*This is fun project.*
+Because everything must be re-written in Rust! :-)
+====
+
+== Status line example (w/o colors)
+
+[source]
+qwen3.6-35b-a3b ▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 27.8% (55.5k/200.0k)
+
+== Install
+
+Build the sources and copy the binary to `~/.claude/`:
+
+[source,bash]
+----
+$ cargo build --release
+$ cp target/release/statusline ~/.claude/
+----
+
+Update `~/.claude/settings.json`, add:
+
+[source,json]
+----
+{
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline",
+    "padding": 2
+  }
+}
+----
+
+== References
+
+- link:https://code.claude.com/docs/en/statusline[ClaudeCode Docs :: Customize your status line]
+
+== License
+
+This project is licensed under the <<LICENSE-MIT#,MIT license>>.

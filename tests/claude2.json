@@ -1,0 +1,29 @@
+{
+  "session_id": "c6cac144-8581-4577-bf5d-8b3e7f0a6b4d",
+  "transcript_path": "/Users/alexeym/.claude/projects/-Users-alexeym-tmp-ai-test/c6cac144-8581-4577-bf5d-8b3e7f0a6b4d.jsonl",
+  "cwd": "/Users/alexeym/rs-claude-statusline",
+  "model": { "id": "qwen3.6-35b-a3b", "display_name": "qwen3.6-35b-a3b" },
+  "workspace": {
+    "current_dir": "/Users/alexeym/rs-claude-statusline",
+    "project_dir": "/Users/alexeym/rs-claude-statusline",
+    "added_dirs": []
+  },
+  "version": "2.1.112",
+  "output_style": { "name": "default" },
+  "cost": {
+    "total_cost_usd": 0,
+    "total_duration_ms": 122,
+    "total_api_duration_ms": 0,
+    "total_lines_added": 0,
+    "total_lines_removed": 0
+  },
+  "context_window": {
+    "total_input_tokens": 0,
+    "total_output_tokens": 0,
+    "context_window_size": 200000,
+    "current_usage": null,
+    "used_percentage": null,
+    "remaining_percentage": null
+  },
+  "exceeds_200k_tokens": false
+}

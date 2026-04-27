@@ -1,0 +1,39 @@
+{
+  "session_id": "d8a63417-a819-42c9-8705-2dce428e3792",
+  "transcript_path": "/Users/alexeym/.claude/projects/-Users-alexeym-tmp-ai-test/d8a63417-a819-42c9-8705-2dce428e3792.jsonl",
+  "cwd": "/Users/alexeym/rs-claude-statusline",
+  "model": {
+    "id": "qwen3.6-35b-a3b",
+    "display_name": "qwen3.6-35b-a3b"
+  },
+  "workspace": {
+    "current_dir": "/Users/alexeym/rs-claude-statusline",
+    "project_dir": "/Users/alexeym/rs-claude-statusline",
+    "added_dirs": []
+  },
+  "version": "2.1.112",
+  "output_style": {
+    "name": "default"
+  },
+  "cost": {
+    "total_cost_usd": 1.0643264000000001,
+    "total_duration_ms": 1806816,
+    "total_api_duration_ms": 237504,
+    "total_lines_added": 12,
+    "total_lines_removed": 1
+  },
+  "context_window": {
+    "total_input_tokens": 315777,
+    "total_output_tokens": 2242,
+    "context_window_size": 200000,
+    "current_usage": {
+      "input_tokens": 28584,
+      "output_tokens": 11,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 26946
+    },
+    "used_percentage": 28,
+    "remaining_percentage": 72
+  },
+  "exceeds_200k_tokens": false
+}
