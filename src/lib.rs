@@ -20,7 +20,7 @@ pub struct StatusData {
 }
 
 impl StatusData {
-    /// Returns the percentage of the context used.
+    /// Returns the percentage of the context used: [0.0, 100.0]
     pub fn ctx_usage_pct(&self) -> f32 {
         if self.ctx_total == 0 {
             return 0.0;

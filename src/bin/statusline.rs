@@ -26,7 +26,10 @@ fn run() -> Result<()> {
     // build the status line
     let status_line = StatusLine::new()
         .add_widget(ModelName::new())
-        .add_widget(ContextBar::new(50).with_percentage().with_usage());
+        .add_widget(ContextBar::new(50)
+            .with_percentage()
+            .with_usage()
+            .with_thresholds(70, 90));
 
     // render the status line
     let output = status_line.render(&status_data);

@@ -3,7 +3,9 @@
     <option name="buildProfileId" value="dev" />
     <option name="command" value="run --package claude-statusline --bin statusline" />
     <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-    <envs />
+    <envs>
+      <env name="LOG_LEVEL" value="debug" />
+    </envs>
     <option name="emulateTerminal" value="true" />
     <option name="channel" value="DEFAULT" />
     <option name="requiredFeatures" value="true" />

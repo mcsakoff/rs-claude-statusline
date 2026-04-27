@@ -21,7 +21,7 @@ build:
 # Run the statusline with a test file
 [group("Development")]
 run TEST_NUM="1":
-    @cargo run --bin statusline < ./tests/claude{{TEST_NUM}}.json
+    @LOG_LEVEL=debug cargo run --bin statusline < ./tests/claude{{TEST_NUM}}.json
 
 # Checks the code to catch common mistakes and improvements
 [group("Development")]
