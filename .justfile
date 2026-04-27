@@ -6,6 +6,10 @@
 usage:
     @just --list --unsorted --list-prefix "  " --justfile "{{justfile()}}"
 
+# Build and copy binary to ~/.claude/
+install: build
+    cp -f target/release/statusline ~/.claude/
+
 ##
 ## Development
 ##
@@ -13,12 +17,12 @@ usage:
 # Build the package in release mode, with optimizations
 [group("Development")]
 build:
-    @cargo build --release
+    cargo build --release
 
 # Run the statusline with a test file
 [group("Development")]
 run TEST_NUM="1":
-    @LOG_LEVEL=debug cargo run --bin statusline < ./tests/claude{{TEST_NUM}}.json
+    @LOG_LEVEL=debug cargo run --bin statusline -- < ./tests/claude{{TEST_NUM}}.json
 
 # Checks the code to catch common mistakes and improvements
 [group("Development")]

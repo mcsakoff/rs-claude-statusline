@@ -1,5 +1,5 @@
 use super::{Model, StatusData};
-use colorz::{css, Colorize};
+use colorz::{Colorize, css};
 use log::debug;
 
 /// Widgets must implement this trait.
@@ -168,7 +168,6 @@ const FILL_CHAR: &str = "▓";
 const EMPTY_CHAR: &str = "░";
 
 impl Renderable for ContextBar {
-
     #[allow(clippy::cast_precision_loss)]
     fn render(&self, data: &StatusData) -> String {
         use std::fmt::Write;
@@ -186,7 +185,7 @@ impl Renderable for ContextBar {
             }
             n
         };
-        debug!("estimated contxt bar width: {estimated_width}");
+        debug!("estimated context bar width: {estimated_width}");
         let mut output = String::with_capacity(estimated_width);
 
         let percents = data.ctx_usage_pct();
@@ -240,6 +239,8 @@ impl Renderable for ContextBar {
                     pct = pct.red().to_string();
                 } else if percents > trh.warn_pct as f32 {
                     pct = pct.yellow().to_string();
+                } else {
+                    pct = pct.green().to_string();
                 }
             }
             write!(&mut output, " {pct}").unwrap();
@@ -250,7 +251,7 @@ impl Renderable for ContextBar {
             let total = (data.ctx_total as f32) / 1000.0;
             write!(&mut output, " ({used:0.1}k/{total:0.1}k)").unwrap();
         }
-        debug!("final contxt bar width: {}", output.len());
+        debug!("final context bar width: {}", output.len());
         output
     }
 }

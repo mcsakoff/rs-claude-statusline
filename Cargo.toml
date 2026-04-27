@@ -1,7 +1,7 @@
 [package]
 name = "claude-statusline"
 version = "0.1.0"
-description = "Status line for ClaudeCode"
+description = "Status line for Claude Code"
 repository = "https://github.com/mcsakoff/rs-claude-statusline"
 authors = ["Alexey McSakoff <mcsakoff@gmail.com>"]
 edition = "2024"

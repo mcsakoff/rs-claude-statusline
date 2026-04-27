@@ -1,10 +1,10 @@
-= ClaudeCode Status Line
+= Claude Code Status Line
 :icons: font
 ifdef::env-github[:outfilesuffix: .adoc]
 
 image:https://img.shields.io/badge/license-MIT-green.svg[License: MIT,link=https://opensource.org/licenses/MIT]
 
-Custom status line for link:https://claude.com/product/claude-code[ClaudeCode] that displays current model and context usage. It is specifically designed for use with link:https://lmstudio.ai[LM Studio] but can be extended to support other LLM servers like, for instance, link:https://ollama.com[Ollama].
+Custom status line for link:https://claude.com/product/claude-code[Claude Code] that displays current model and context usage. It is specifically designed for use with link:https://lmstudio.ai[LM Studio] but can be extended to support other LLM servers like, for instance, link:https://ollama.com[Ollama].
 
 [NOTE]
 ====
@@ -48,7 +48,7 @@ Update `~/.claude/settings.json`, add:
 
 == References
 
-- link:https://code.claude.com/docs/en/statusline[ClaudeCode Docs :: Customize your status line]
+- link:https://code.claude.com/docs/en/statusline[Claude Code Docs :: Customize your status line]
 
 == License
 

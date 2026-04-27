@@ -75,7 +75,7 @@ impl ClaudeDataCtxUsage {
 }
 
 /// Collects status data from:
-/// - stdin (passed by `ClaudeCode`)
+/// - stdin (passed by Claude Code)
 /// - environment variables
 /// - LLM API (optional)
 ///
