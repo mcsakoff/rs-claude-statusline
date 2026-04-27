@@ -18,18 +18,13 @@ fn main() -> ExitCode {
 
 fn run() -> Result<()> {
     use claude_statusline::{collect_data};
-    use claude_statusline::widgets::{StatusLine, ModelName, ContextBar};
+    use claude_statusline::widgets::StatusLine;
 
     // collect required data from various sources
     let status_data = collect_data()?;
 
     // build the status line
-    let status_line = StatusLine::new()
-        .add_widget(ModelName::new())
-        .add_widget(ContextBar::new(50)
-            .with_percentage()
-            .with_usage()
-            .with_thresholds(70, 90));
+    let status_line = StatusLine::default();
 
     // render the status line
     let output = status_line.render(&status_data);

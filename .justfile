@@ -1,6 +1,3 @@
-BINARY := "statusline"
-VERSION := `cargo metadata --format-version=1 --no-deps | jq -r '.packages[] | select(.name == "claude-statusline").version'`
-
 ##
 ## General
 ##
@@ -26,6 +23,7 @@ run TEST_NUM="1":
 # Checks the code to catch common mistakes and improvements
 [group("Development")]
 check:
+    @clear
     @cargo clippy --all -- -W clippy::pedantic -D warnings
 
 # Execute all unit and integration tests

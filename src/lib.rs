@@ -1,3 +1,5 @@
+#![allow(clippy::must_use_candidate)]
+
 use anyhow::{anyhow, bail, Result};
 use log::error;
 use serde::Deserialize;
@@ -21,6 +23,7 @@ pub struct StatusData {
 
 impl StatusData {
     /// Returns the percentage of the context used: [0.0, 100.0]
+    #[allow(clippy::cast_precision_loss)]
     pub fn ctx_usage_pct(&self) -> f32 {
         if self.ctx_total == 0 {
             return 0.0;
@@ -57,6 +60,7 @@ impl ClaudeDataCtx {
 }
 
 #[derive(Deserialize, Debug)]
+#[allow(clippy::struct_field_names)]
 struct ClaudeDataCtxUsage {
     input_tokens: usize,
     cache_creation_input_tokens: usize,
@@ -71,9 +75,15 @@ impl ClaudeDataCtxUsage {
 }
 
 /// Collects status data from:
-/// - stdin (passed by ClaudeCode)
+/// - stdin (passed by `ClaudeCode`)
 /// - environment variables
 /// - LLM API (optional)
+///
+/// # Errors
+/// - Returns an error if reading stdin fails
+/// - Returns an error if reading environment variables fails
+/// - Returns an error if reading LLM API fails
+///
 pub fn collect_data() -> Result<StatusData> {
     // Read clade code data from stdin
     let claude_data: ClaudeData = {

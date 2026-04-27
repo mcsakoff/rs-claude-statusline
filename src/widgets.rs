@@ -1,6 +1,6 @@
+use super::{Model, StatusData};
 use colorz::{css, Colorize};
 use log::debug;
-use super::{Model, StatusData};
 
 /// Widgets must implement this trait.
 pub trait Renderable {
@@ -14,6 +14,7 @@ impl Renderable for String {
 }
 
 /// A main status line object.
+#[must_use]
 pub struct StatusLine {
     widgets: Vec<Box<dyn Renderable>>,
 }
@@ -49,6 +50,18 @@ impl StatusLine {
     }
 }
 
+/// Default status line with all features enabled.
+impl Default for StatusLine {
+    fn default() -> Self {
+        StatusLine::new().add_widget(ModelName::new()).add_widget(
+            ContextBar::new(50)
+                .with_percentage()
+                .with_usage()
+                .with_thresholds(70, 90),
+        )
+    }
+}
+
 impl Renderable for StatusLine {
     /// Renders the status line widgets.
     fn render(&self, data: &StatusData) -> String {
@@ -56,7 +69,7 @@ impl Renderable for StatusLine {
 
         let mut output = String::new();
         for widget in &self.widgets {
-            write!(&mut output, "{}", widget.render(&data)).unwrap();
+            write!(&mut output, "{}", widget.render(data)).unwrap();
         }
         output
     }
@@ -68,6 +81,12 @@ pub struct ModelName {}
 impl ModelName {
     pub fn new() -> Self {
         Self {}
+    }
+}
+
+impl Default for ModelName {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -88,6 +107,7 @@ struct ContextBarThreshold {
     crit_pct: usize,
 }
 /// A widget that displays the context usage statistics.
+#[must_use]
 pub struct ContextBar {
     width: usize,
     with_percentage: bool,
@@ -135,6 +155,9 @@ impl ContextBar {
     ///
     /// `percentage` must be between 0.0 and 100.0.
     ///
+    #[allow(clippy::cast_sign_loss)]
+    #[allow(clippy::cast_precision_loss)]
+    #[allow(clippy::cast_possible_truncation)]
     fn prc_to_width(&self, percentage: f32) -> usize {
         let k = (percentage / 100.0).clamp(0.0, 1.0);
         (k * self.width as f32) as usize
@@ -145,6 +168,8 @@ const FILL_CHAR: &str = "▓";
 const EMPTY_CHAR: &str = "░";
 
 impl Renderable for ContextBar {
+
+    #[allow(clippy::cast_precision_loss)]
     fn render(&self, data: &StatusData) -> String {
         use std::fmt::Write;
 
@@ -161,7 +186,7 @@ impl Renderable for ContextBar {
             }
             n
         };
-        debug!("estimated contxt bar width: {}", estimated_width);
+        debug!("estimated contxt bar width: {estimated_width}");
         let mut output = String::with_capacity(estimated_width);
 
         let percents = data.ctx_usage_pct();
@@ -206,10 +231,10 @@ impl Renderable for ContextBar {
                 write!(&mut output, "{}", FILL_CHAR.repeat(filled)).unwrap();
             }
             write!(&mut output, "{}", EMPTY_CHAR.repeat(empty)).unwrap();
-        };
+        }
 
         if self.with_percentage {
-            let mut pct: String = format!("{:0.1}%", percents);
+            let mut pct: String = format!("{percents:0.1}%");
             if let Some(trh) = &self.with_thresholds {
                 if percents > trh.crit_pct as f32 {
                     pct = pct.red().to_string();
@@ -217,8 +242,9 @@ impl Renderable for ContextBar {
                     pct = pct.yellow().to_string();
                 }
             }
-            write!(&mut output, " {}", pct).unwrap();
+            write!(&mut output, " {pct}").unwrap();
         }
+
         if self.with_usage {
             let used = (data.ctx_used as f32) / 1000.0;
             let total = (data.ctx_total as f32) / 1000.0;
