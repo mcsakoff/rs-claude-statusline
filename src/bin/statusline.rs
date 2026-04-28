@@ -1,7 +1,6 @@
 use anyhow::Result;
 use log::error;
 use std::process::ExitCode;
-use claude_statusline::widgets::Renderable;
 
 fn main() -> ExitCode {
     env_logger::init_from_env(
@@ -17,11 +16,11 @@ fn main() -> ExitCode {
 }
 
 fn run() -> Result<()> {
-    use claude_statusline::{collect_data};
-    use claude_statusline::widgets::StatusLine;
+    use claude_statusline::collect_data;
+    use claude_statusline::widgets::{Renderable, StatusLine};
 
     // collect required data from various sources
-    let status_data = collect_data()?;
+    let status_data = collect_data(std::io::stdin().lock())?;
 
     // build the status line
     let status_line = StatusLine::default();
