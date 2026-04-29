@@ -119,7 +119,7 @@ pub struct ContextBar {
 impl ContextBar {
     pub fn new(width: usize) -> Self {
         Self {
-            width: width.clamp(1, usize::MAX),
+            width: width.max(1),
             with_percentage: false,
             with_usage: false,
             with_thresholds: None,

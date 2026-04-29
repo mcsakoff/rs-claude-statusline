@@ -97,7 +97,6 @@ impl ClaudeDataCtxUsage {
 pub fn collect_data<R: std::io::Read>(reader: R) -> Result<StatusData> {
     // Read clade code data from reader
     let claude_data: ClaudeData = {
-        use serde_json;
         serde_json::from_reader(reader).map_err(|err| anyhow!(err))?
     };
 
@@ -120,7 +119,7 @@ pub fn collect_data<R: std::io::Read>(reader: R) -> Result<StatusData> {
     let ctx_used = claude_data.context_window.tokens_used();
 
     if let Some(base_url) = anthropic_base_url {
-        // If Anthropic Base URL is set, that likely meas we are using custom LLM server.
+        // If Anthropic Base URL is set, that likely means we are using custom LLM server.
         // Assume it is LM Studio.
         // Make a request to the LLM API to get a model description.
         match get_lmstudio_model(&base_url) {
@@ -151,7 +150,7 @@ struct LMStudioData {
     data: Vec<LMStudioDataModel>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug)]
 struct LMStudioDataModel {
     id: String,
     loaded_context_length: usize,
@@ -170,7 +169,7 @@ fn get_lmstudio_model(base_url: &str) -> Result<LMStudioDataModel> {
 
     // Assume, the first model is the one we are using.
     // TODO: Find a way to identify the correct model if there are multiple models loaded.
-    Ok(data.data[0].clone())
+    Ok(data.data.into_iter().next().unwrap())
 }
 
 #[cfg(test)]
