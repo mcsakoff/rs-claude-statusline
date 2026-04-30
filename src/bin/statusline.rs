@@ -16,17 +16,16 @@ fn main() -> ExitCode {
 }
 
 fn run() -> Result<()> {
-    use claude_statusline::collect_data;
-    use claude_statusline::widgets::{Renderable, StatusLine};
+    use claude_statusline::widgets::Renderable;
 
     // collect required data from various sources
-    let status_data = collect_data(std::io::stdin().lock())?;
+    let status_data = claude_statusline::collect_data(std::io::stdin().lock())?;
 
     // build the status line
-    let status_line = StatusLine::default();
+    let status_line = claude_statusline::widgets::StatusLine::default();
 
     // render the status line
-    let output = status_line.render(&status_data);
-    println!("{output}");
+    let mut stdout = std::io::stdout().lock();
+    status_line.render(&status_data, &mut stdout)?;
     Ok(())
 }

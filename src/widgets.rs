@@ -1,15 +1,16 @@
-use super::{Model, StatusData};
 use colorz::{Colorize, css};
-use log::debug;
+use std::io::{Write, Result};
+
+use super::{Model, StatusData};
 
 /// Widgets must implement this trait.
 pub trait Renderable {
-    fn render(&self, data: &StatusData) -> String;
+    fn render(&self, data: &StatusData, buffer: &mut dyn Write) -> Result<()>;
 }
 
 impl Renderable for String {
-    fn render(&self, _data: &StatusData) -> String {
-        self.clone()
+    fn render(&self, _data: &StatusData, buffer: &mut dyn Write) -> Result<()> {
+        buffer.write_all(self.as_bytes())
     }
 }
 
@@ -65,14 +66,11 @@ impl Default for StatusLine {
 
 impl Renderable for StatusLine {
     /// Renders the status line widgets.
-    fn render(&self, data: &StatusData) -> String {
-        use std::fmt::Write;
-
-        let mut output = String::new();
+    fn render(&self, data: &StatusData, buffer: &mut dyn Write) -> Result<()> {
         for widget in &self.widgets {
-            write!(&mut output, "{}", widget.render(data)).unwrap();
+            widget.render(data, buffer)?;
         }
-        output
+        Ok(())
     }
 }
 
@@ -92,13 +90,21 @@ impl Default for ModelName {
 }
 
 impl Renderable for ModelName {
-    fn render(&self, data: &StatusData) -> String {
+    fn render(&self, data: &StatusData, buffer: &mut dyn Write) -> Result<()> {
         match &data.model {
-            Model::Claude(model_name) => model_name.fg(css::Salmon).bold().to_string(),
+            Model::Claude(model_name) => {
+                write!(buffer, "{}", model_name.fg(css::Salmon).bold())?;
+            }
             Model::LMStudio(model_name) => {
-                format!("{} [{}]", "LM Studio".white().bold(), model_name.cyan())
+                write!(
+                    buffer,
+                    "{} [{}]",
+                    "LM Studio".white().bold(),
+                    model_name.cyan()
+                )?;
             }
         }
+        Ok(())
     }
 }
 
@@ -170,27 +176,10 @@ const EMPTY_CHAR: &str = "░";
 
 impl Renderable for ContextBar {
     #[allow(clippy::cast_precision_loss)]
-    fn render(&self, data: &StatusData) -> String {
-        use std::fmt::Write;
-
-        let estimated_width = {
-            let mut n = self.width * 3; // due to Unicode symbols
-            if self.with_percentage {
-                n += " 000.0%".len();
-            }
-            if self.with_usage {
-                n += " (0000.0k/0000.0k)".len();
-            }
-            if self.with_thresholds.is_some() {
-                n += 40; // for colors
-            }
-            n
-        };
-        debug!("estimated context bar width: {estimated_width}");
-        let mut output = String::with_capacity(estimated_width);
-
+    fn render(&self, data: &StatusData, buffer: &mut dyn Write) -> Result<()> {
         let percents = data.ctx_usage_pct();
         let filled = self.prc_to_width(percents);
+
         if let Some(trh) = &self.with_thresholds {
             // Four sections: green, yellow, red and empty
             let boundary_green = self.prc_to_width(trh.warn_pct as f32);
@@ -215,22 +204,22 @@ impl Renderable for ContextBar {
             let empty = self.width - (green + yellow + red);
 
             if green > 0 {
-                write!(&mut output, "{}", FILL_CHAR.repeat(green).green()).unwrap();
+                write!(buffer, "{}", FILL_CHAR.repeat(green).green())?;
             }
             if yellow > 0 {
-                write!(&mut output, "{}", FILL_CHAR.repeat(yellow).yellow()).unwrap();
+                write!(buffer, "{}", FILL_CHAR.repeat(yellow).yellow())?;
             }
             if red > 0 {
-                write!(&mut output, "{}", FILL_CHAR.repeat(red).red()).unwrap();
+                write!(buffer, "{}", FILL_CHAR.repeat(red).red())?;
             }
-            write!(&mut output, "{}", EMPTY_CHAR.repeat(empty)).unwrap();
+            write!(buffer, "{}", EMPTY_CHAR.repeat(empty))?;
         } else {
             // Two sections: filled and empty
             let empty = self.width - filled;
             if filled > 0 {
-                write!(&mut output, "{}", FILL_CHAR.repeat(filled)).unwrap();
+                write!(buffer, "{}", FILL_CHAR.repeat(filled))?;
             }
-            write!(&mut output, "{}", EMPTY_CHAR.repeat(empty)).unwrap();
+            write!(buffer, "{}", EMPTY_CHAR.repeat(empty))?;
         }
 
         if self.with_percentage {
@@ -244,16 +233,15 @@ impl Renderable for ContextBar {
                     pct = pct.green().to_string();
                 }
             }
-            write!(&mut output, " {pct}").unwrap();
+            write!(buffer, " {pct}")?;
         }
 
         if self.with_usage {
             let used = (data.ctx_used as f32) / 1000.0;
             let total = (data.ctx_total as f32) / 1000.0;
-            write!(&mut output, " ({used:0.1}k/{total:0.1}k)").unwrap();
+            write!(buffer, " ({used:0.1}k/{total:0.1}k)")?;
         }
-        debug!("final context bar width: {}", output.len());
-        output
+        Ok(())
     }
 }
 
@@ -271,8 +259,9 @@ mod tests {
             ctx_used: 0,
             ctx_total: 0,
         };
-        let output = w.render(&data);
-        assert_eq!(output, s);
+        let mut output = vec![];
+        w.render(&data, &mut output).unwrap();
+        assert_eq!(String::from_utf8(output).unwrap(), s);
     }
 
     #[test]
@@ -298,8 +287,9 @@ mod tests {
                 ctx_used: 0,
                 ctx_total: 0,
             };
-            let output = model_name.render(&data);
-            assert_eq!(output, tc.output, "case #{ti}");
+            let mut output = vec![];
+            model_name.render(&data, &mut output).unwrap();
+            assert_eq!(String::from_utf8(output).unwrap(), tc.output, "case #{ti}");
         }
     }
 
@@ -350,8 +340,9 @@ mod tests {
                 ctx_used: tc.used,
                 ctx_total: tc.total,
             };
-            let output = bar.render(&data);
-            assert_eq!(output, tc.bar, "case #{ti}");
+            let mut output = vec![];
+            bar.render(&data, &mut output).unwrap();
+            assert_eq!(String::from_utf8(output).unwrap(), tc.bar, "case #{ti}");
         }
     }
 
@@ -414,8 +405,9 @@ mod tests {
                 ctx_used: tc.used,
                 ctx_total: tc.total,
             };
-            let output = bar.render(&data);
-            assert_eq!(output, tc.bar, "case #{ti}");
+            let mut output = vec![];
+            bar.render(&data, &mut output).unwrap();
+            assert_eq!(String::from_utf8(output).unwrap(), tc.bar, "case #{ti}");
         }
     }
 
@@ -428,9 +420,10 @@ mod tests {
             ctx_used: 32_000,
             ctx_total: 64_000,
         };
-        let output = status_line.render(&data);
+        let mut output = vec![];
+        status_line.render(&data, &mut output).unwrap();
         assert_eq!(
-            output,
+            String::from_utf8(output).unwrap(),
             "\u{1b}[1m\u{1b}[37mLM Studio\u{1b}[22m\u{1b}[39m [\u{1b}[36mtest\u{1b}[39m]  \u{1b}[32m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\u{1b}[39m░░░░░░░░░░░░░░░░░░░░░░░░░ \u{1b}[32m50.0%\u{1b}[39m (32.0k/64.0k)!!!"
         );
     }

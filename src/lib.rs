@@ -96,9 +96,7 @@ impl ClaudeDataCtxUsage {
 ///
 pub fn collect_data<R: std::io::Read>(reader: R) -> Result<StatusData> {
     // Read clade code data from reader
-    let claude_data: ClaudeData = {
-        serde_json::from_reader(reader).map_err(|err| anyhow!(err))?
-    };
+    let claude_data: ClaudeData = serde_json::from_reader(reader).map_err(|err| anyhow!(err))?;
 
     // Get Anthropic Base URL from environment variable
     let anthropic_base_url = {
