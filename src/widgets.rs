@@ -1,10 +1,14 @@
 use colorz::{Colorize, css};
-use std::io::{Write, Result};
+use std::io::{Result, Write};
 
 use super::{Model, StatusData};
 
 /// Widgets must implement this trait.
 pub trait Renderable {
+    /// Render the widget to the buffer.
+    ///
+    /// # Errors
+    /// Returns `std::io::Error` on failure.
     fn render(&self, data: &StatusData, buffer: &mut dyn Write) -> Result<()>;
 }
 
